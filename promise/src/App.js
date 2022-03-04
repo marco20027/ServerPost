@@ -76,7 +76,7 @@ function App() {
   console.log(keys)
   const buttonClickCommenti = () => {
     fetchCommenti().then((result) => {
-      setCommenti(result)
+      setCommenti([result])
       console.log(result)
     })
   }
@@ -84,7 +84,7 @@ function App() {
   console.log(keys1)
   const buttonClickUtenti = () => {
     fetchUtenti().then((result) => {
-      setUtenti(result)
+      setUtenti([result])
       console.log(result)
     })
   }
@@ -117,7 +117,7 @@ function App() {
                     {item.title}
                     {keys.map((key, index) => {
                       const value = item[key];
-                      if (value === 'string')
+                      if ( typeof value === 'string')
                         return <td key={index}>{value}</td>
                       else return ""
                     })}
@@ -139,14 +139,74 @@ function App() {
           <table>
             <thead>
               <tr>
-              
+              {keys1.map((key) => {
+                  <th key={key}>{key}</th>
+                })}
               </tr>
             </thead>
             <tbody>
+            <pre>{JSON.stringify({commenti})}</pre>
+              
+              {commenti.map((item) => {
+                return (
+                  <tr key={item.id}>
+                    {item.title}
+                    {keys.map((key, index) => {
+                      const value = item[key];
+                      if (value === 'string')
+                        return <td key={index}>{value}</td>
+                      else return ""
+                    })}
+                  </tr>
+
+                )
+              })}
+              {commenti.filter((item,el)=>{
+                const value = item[el]
+                if( value > item.id[el] === '1' && value < item.id[el] === '4' )
+                return <tr key={item.body}>  
+                </tr>
+              })}
   
 
             </tbody>
           </table>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                {keys2.map((key) => {
+                  <th key={key}>{key}</th>
+                })}
+                </tr>
+              </thead>
+              <tbody>
+                <pre>{JSON.stringify({utenti})}</pre>
+              
+              {utenti.map((item) => {
+                return (
+                  <tr key={item.id}>
+                    {item.title}
+                    {keys.map((key, index) => {
+                      const value = item[key];
+                      if ( typeof value === 'string')
+                        return <td key={index}>{value}</td>
+                      else return ""
+                    })}
+                  </tr>
+
+                )
+              })}
+              {utenti.filter((item,el)=>{
+                const value = item[el]
+                if( value > item.id[el] === '1' && value < item.id[el] === '4' )
+                return <tr key={item.body}>  
+                </tr>
+              })}
+
+              </tbody>
+            </table>
+          </div>
         </div>
       </header>
     </div>
