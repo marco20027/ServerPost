@@ -83,9 +83,11 @@ const random = (lun, maxN) => {
 }
 
 
+const { ZOHO } = window
 
-
-function App() {
+function App(props) {
+  const [lead, setLead] = useState({})
+  const [account, setAccount] = useState({})
   const [post, setPost] = useState([])
   const [commenti, setCommenti] = useState([])
   const [utenti, setUtenti] = useState([])
@@ -127,6 +129,31 @@ function App() {
     setAlbum(a)
   }
 
+  const getRecord = React.useCallback(async () => {
+    const { Entity, EntityId } = props.crm
+    await ZOHO.CRM.API.getRecord({Entity:Entity, RecordID:EntityId})
+    .then(async function(data){
+        console.log("CONTATTO: ",data)
+        setLead(data.data[0])
+        const id_Azienda = data.data[0].Test.id
+        await ZOHO.CRM.API.getRecord({Entity:"Accounts", RecordID: id_Azienda})
+        .then(function(data){
+          console.log("AZIENDA: ",data)
+          setAccount(data.data[0])
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+  }, [props])
+
+  React.useEffect(() => {
+    console.log('useEffect')    
+    getRecord()
+  }, [getRecord])
   
   // const keys = getKeys(post)
   // console.log(keys)
@@ -173,6 +200,9 @@ function App() {
             <tbody>
               <pre>{JSON.stringify({post})}</pre>
                */}
+               {lead.id !== undefined ? (<p>{lead.id}</p>) : ''}
+               {lead.Full_Name !== undefined ? (<p>{lead.Full_Name}</p>) : ''}
+               {account.Phone !== undefined ? (<p>{account.Phone}</p>) : ''}
               <ul>
               {post.map((item) => {
                 return (
@@ -304,6 +334,7 @@ function App() {
           </div>
 
       </header>
+      <button onClick={() => window.location.reload()}>Ricarica</button>
     </div>
   );
 }
