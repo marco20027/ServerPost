@@ -14,9 +14,8 @@ async function fetchPost(ID) {
       method: 'GET'
     }
   ).then((p) => p.json());
-  //console.log(post)
+  console.log(post)
   return post
-
 }
 async function fetchCommenti(ID) {
   const commenti = await fetch(
@@ -29,14 +28,26 @@ async function fetchCommenti(ID) {
   //console.log(commenti)
   return commenti
 }
-async function fetchUtenti() {
+async function fetchUtenti(ID) {
   const utenti = await fetch(
-    'https://jsonplaceholder.typicode.com/users',
+    'https://jsonplaceholder.typicode.com/users/' + ID,
     {
       method: 'GET'
     }
   ).then((u) => u.json());
+  console.log(utenti)
   return utenti;
+}
+async function fetchAlbum(ID){
+  const album = await fetch(
+    'https://jsonplaceholder.typicode.com/albums/' + ID,
+  
+  {
+    method: 'GET'
+  }
+  ).then((al) => al.json());
+  console.log(album)
+  return album
 }
 function getKeys(post) {
   if (post.length > 0) {
@@ -60,6 +71,7 @@ function getKeys2(utenti) {
   }
 }
 
+
 const random = (lun, maxN) => {
   let arr = [];
   while(arr.length < lun){
@@ -77,6 +89,7 @@ function App() {
   const [post, setPost] = useState([])
   const [commenti, setCommenti] = useState([])
   const [utenti, setUtenti] = useState([])
+  const [album, setAlbum] = useState([])
   const buttonClickPost = async () => {
     let posts = []
     for(let i = 1 ; i <= 2; i++){
@@ -95,6 +108,26 @@ function App() {
     }
     setCommenti(comments)
   }
+  const buttonClickUtenti = async () =>{
+    let users = []
+    for (let i = 1; i <= 10; i++){
+      let user = await fetchUtenti(i).then((result) => result)
+      users.push(user)
+    }
+    setUtenti(users)
+  }
+
+  const buttonClickAlbum = async () => {
+    let a = []
+    let cd = random(5,100)
+    for (let i = 0; i< cd.length; i++){
+      let disco = await fetchAlbum(cd[i]).then((result)=> result)
+      a.push(disco)
+    }
+    setAlbum(a)
+  }
+
+  
   // const keys = getKeys(post)
   // console.log(keys)
   // const buttonClickCommenti = () => {
@@ -117,8 +150,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+       <h1>API CALL</h1>
         <button type='button' onClick={() => buttonClickPost()}>API post</button>
         <button type='button' onClick={() => buttonClickComments()}>API commenti</button>
+        <button type='button' onClick={() => buttonClickUtenti()}>API utenti</button>
+        <button type='button' onClick={() => buttonClickAlbum()}>API album</button>
+        
+        
+
         {/* <button type='button' onClick={buttonClickUtenti}>API utenti</button> */}
         <br>
         </br>
@@ -153,12 +192,40 @@ function App() {
                 )
               })}
               </ul>
+              {/*<li>
+                {post.map((item)=>{
+                  return(
+                    <li key={item.id}>
+                      {item.body}
+                      </li>
+                  )
+                })}
+              </li>*/}
               {/* {post.filter((item,el)=>{
                 const value = item[el]
                 if( value > item.id[el] === '1' && value < item.id[el] === '4' )
                 return <tr key={item.body}>  
                 </tr>
               })} */}
+              <ul>
+                {utenti.map((item)=>{
+                  return(
+                  <li key={item.id}>
+                    {item.name}
+                  </li>
+                  )
+                })}
+              </ul>
+              <ul>
+                {album.map((item)=>{
+                  return(
+                    <li key={item.id}>
+                      {item.title}
+                    </li>
+                  )
+                })}
+                </ul>
+              
 {/* 
             </tbody>
           </table>
